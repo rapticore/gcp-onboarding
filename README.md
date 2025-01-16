@@ -33,11 +33,11 @@ Deployment Options:
   - YOUR-PROJECT-ID: Your Google Cloud project ID
   - YOUR-RAPTICORE-ID: Your Rapticore account ID (12 digits)
 
-# Initialize the working directory containing Terraform configuration files
+### Initialize the working directory containing Terraform configuration files
 `terraform init`
 
-# Preview the execution plan and verify resources that will be created
+### Preview the execution plan and verify resources that will be created
 `terraform plan -var="gcp_project_id=YOUR-PROJECT-ID" -var="rapticore_account_id=YOUR-RAPTICORE-ID"`
 
-# Apply the changes to reach the desired state of configuration
+### Apply the changes to reach the desired state of configuration
 `terraform apply -var="gcp_project_id=YOUR-PROJECT-ID" -var="rapticore_account_id=YOUR-RAPTICORE-ID"`
