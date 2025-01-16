@@ -35,9 +35,11 @@ Deployment Options:
 
 ### Initialize the working directory containing Terraform configuration files
 `terraform init`
+___
 
 ### Preview the execution plan and verify resources that will be created
 `terraform plan -var="gcp_project_id=YOUR-PROJECT-ID" -var="rapticore_account_id=YOUR-RAPTICORE-ID"`
+___
 
 ### Apply the changes to reach the desired state of configuration
 `terraform apply -var="gcp_project_id=YOUR-PROJECT-ID" -var="rapticore_account_id=YOUR-RAPTICORE-ID"`
