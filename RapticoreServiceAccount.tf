@@ -1,14 +1,6 @@
-terraform {
-  backend "gcs" {}
-}
 
 provider "google" {
   project = var.gcp_project_id
-}
-
-variable "state_bucket" {
-  description = "GCS bucket for Terraform state"
-  type        = string
 }
 
 variable "rapticore_account_id" {
