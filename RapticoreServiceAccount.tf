@@ -1,32 +1,49 @@
+terraform {
+  backend "gcs" {}
+}
 
 provider "google" {
   project = var.gcp_project_id
 }
 
+data "terraform_remote_state" "current" {
+  backend = "gcs"
+  config = {
+    bucket = var.state_bucket
+  }
+}
+
+variable "state_bucket" {
+  description = "GCS bucket for Terraform state"
+  type        = string
+}
+
 variable "rapticore_account_id" {
   description = "Rapticore Account ID"
   type        = string
+  
   validation {
     condition     = can(regex("^[0-9]{12}$", var.rapticore_account_id))
-    error_message = "Please enter a valid AWS Account ID (12 digits)"
+    error_message = "Please enter a valid AWS Account ID (12 digits, provided by Rapticore)"
   }
 }
 
 variable "gcp_project_id" {
   description = "GCP Project ID (not the project number)"
   type        = string
+  
   validation {
     condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.gcp_project_id))
-    error_message = "GCP project ID must be 6-30 characters, start with letter, contain only lowercase letters, numbers, hyphens"
+    error_message = "GCP project ID must be 6-30 characters long, start with a letter, and contain only lowercase letters, numbers, and hyphens"
   }
 }
 
 resource "google_project_service" "required_apis" {
   for_each = toset([
     "iam.googleapis.com",
-    "iamcredentials.googleapis.com", 
+    "iamcredentials.googleapis.com",
     "sts.googleapis.com",
-    "cloudasset.googleapis.com"
+    "cloudasset.googleapis.com" 
   ])
   
   service = each.key
@@ -34,22 +51,22 @@ resource "google_project_service" "required_apis" {
 }
 
 resource "google_iam_workload_identity_pool" "rapticore_workload_pool" {
-  workload_identity_pool_id = "rapticore-workload-pool-v11"
-  display_name             = "Rapticore Scanner Identity Pool"
-  description             = "Identity pool for Rapticore security scanning service"
-  disabled                = false
+  workload_identity_pool_id = "rapticore-workload-pool-v13"
+  display_name              = "Rapticore Scanner Identity Pool"
+  description               = "Identity pool for Rapticore security scanning service"
+  disabled                  = false
   
   depends_on = [google_project_service.required_apis]
 }
 
 resource "google_iam_workload_identity_pool_provider" "rapticore_workload_provider" {
   workload_identity_pool_id          = google_iam_workload_identity_pool.rapticore_workload_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "rapticore-workload-provider-v11"
+  workload_identity_pool_provider_id = "rapticore-workload-provider-v13"
   display_name                       = "Rapticore Scanner Provider"
   description                        = "Identity provider for Rapticore AWS security scanning service"
   
   attribute_mapping = {
-    "google.subject"       = "assertion.account"
+    "google.subject"      = "assertion.account"
     "attribute.aws_account" = "assertion.account"
   }
   
@@ -63,7 +80,7 @@ resource "google_iam_workload_identity_pool_provider" "rapticore_workload_provid
 }
 
 resource "google_service_account" "rapticore_service_account" {
-  account_id   = "rapticore-service-account-v11"
+  account_id   = "rapticore-service-account-v13"
   display_name = "Rapticore Service Account"
   description  = "Service account for Rapticore security vulnerability scanning"
   
@@ -72,7 +89,7 @@ resource "google_service_account" "rapticore_service_account" {
 
 resource "google_project_iam_member" "rapticore_service_account_roles" {
   for_each = toset([
-    "roles/viewer",
+    "roles/viewer",  
     "roles/iam.workloadIdentityUser",
     "roles/iam.serviceAccountTokenCreator",
     "roles/compute.viewer",
@@ -127,6 +144,6 @@ output "service_account_email" {
 }
 
 output "service_account_name" {
-  value       = google_service_account.rapticore_service_account.account_id 
+  value       = google_service_account.rapticore_service_account.account_id
   description = "The account id of the Rapticore Scanner service account"
 }
