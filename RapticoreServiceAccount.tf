@@ -1,5 +1,21 @@
+terraform {
+  backend "gcs" {}
+}
+
 provider "google" {
   project = var.gcp_project_id
+}
+
+data "terraform_remote_state" "current" {
+  backend = "gcs"
+  config = {
+    bucket = var.state_bucket
+  }
+}
+
+variable "state_bucket" {
+  description = "GCS bucket for Terraform state"
+  type        = string
 }
 
 variable "rapticore_account_id" {
@@ -35,7 +51,7 @@ resource "google_project_service" "required_apis" {
 }
 
 resource "google_iam_workload_identity_pool" "rapticore_workload_pool" {
-  workload_identity_pool_id = "rapticore-workload-pool"
+  workload_identity_pool_id = "rapticore-workload-pool-v1"
   display_name              = "Rapticore Scanner Identity Pool"
   description               = "Identity pool for Rapticore security scanning service"
   disabled                  = false
@@ -50,7 +66,7 @@ resource "google_iam_workload_identity_pool_provider" "rapticore_workload_provid
   description                        = "Identity provider for Rapticore AWS security scanning service"
   
   attribute_mapping = {
-    "google.subject"      = "assertion.arn"
+    "google.subject"      = "assertion.account"
     "attribute.aws_account" = "assertion.account"
   }
   
@@ -112,7 +128,6 @@ resource "google_service_account_iam_binding" "workload_identity_binding" {
   ]
 }
 
-# Outputs
 output "pool_id" {
   value       = google_iam_workload_identity_pool.rapticore_workload_pool.workload_identity_pool_id
   description = "Pool Id for the Workload Identity Pool"
