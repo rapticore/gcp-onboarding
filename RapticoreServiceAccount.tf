@@ -51,7 +51,7 @@ resource "google_project_service" "required_apis" {
 }
 
 resource "google_iam_workload_identity_pool" "rapticore_workload_pool" {
-  workload_identity_pool_id = "rapticore-workload-pool-v1"
+  workload_identity_pool_id = "rapticore-workload-pool"
   display_name              = "Rapticore Scanner Identity Pool"
   description               = "Identity pool for Rapticore security scanning service"
   disabled                  = false
