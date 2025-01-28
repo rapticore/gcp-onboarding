@@ -16,8 +16,8 @@ Deployment Options:
     - Select appropriate region.
     - Select a terraform version.
     - Select a service account with owner role attached to it.
-    - Download the terraform template on your device.
-    - Create a cloud storage bucket, and upload the terraform template from [this link](https://raw.githubusercontent.com/rapticore/gcp-onboarding/refs/heads/main/infra-manager-template/main.tf)
+    - Download the terraform template for infrastructure manager on your device from [this link](https://raw.githubusercontent.com/rapticore/gcp-onboarding/refs/heads/main/infra-manager-template/main.tf)
+    - Create a cloud storage bucket, and upload the terraform template.
     - Select gcs as Source of Terraform configuration and provide the link of the gcs bucket containing the terraform template i.e gs://your_bucket_name.
     - Click continue and enter rapticore_account_id as key1. Enter Rapticore Account Id provided to you by Rapticore as value1 for rapticore_account_id key.
     - Click add value and enter gcp_project_id as key2. Enter project id of your gcp project as value2 for gcp_project_id.
@@ -29,7 +29,7 @@ Deployment Options:
 2. Google Cloud Command Line Deployment
 - Install Terraform by following HashiCorp's official documentation for your operating system.
 - Install Google Cloud CLI (gcloud) and configure Google Cloud account for deploying the stack using the gcloud CLI. Please consult Google Cloud documentation on gcloud CLI installation and configure gcloud authentication.
-- Download the terraform template on your device from [this link](https://raw.githubusercontent.com/rapticore/gcp-onboarding/refs/heads/main/terraform-cli/main.tf).
+- Download the terraform template for cli with terraform on your device from [this link](https://raw.githubusercontent.com/rapticore/gcp-onboarding/refs/heads/main/terraform-cli/main.tf).
 - Once both Terraform and gcloud are configured, run the following commands replacing:
   - YOUR-PROJECT-ID: Your Google Cloud project ID
   - YOUR-RAPTICORE-ID: Your Rapticore account ID (12 digits)
